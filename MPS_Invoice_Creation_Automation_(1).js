@@ -33,7 +33,7 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
       type: 'transaction',
       settings: [{ name: 'consolidationtype', value: 'ACCTTYPE' }],
       filters: [
-        ['type','anyof','CuTrSale107'],
+        ['type','anyof','CuTrSale106'],
         'AND',
         ['internalid','anyof', String(repId)],
         'AND',

@@ -57,6 +57,13 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
         search.createColumn({ name:'custcol_tnd_commission' }),
         search.createColumn({ name:'custcol_snp_rpcm_tnd_manager' }),
         search.createColumn({ name: 'amount' }),
+        search.createColumn({ name:'custcol_snp_rpcm_percent' }),
+        search.createColumn({ name:'custcol_snp_rpcm_customer_po' }),
+        search.createColumn({ name:'custcol_snp_rpcm_soldtolocation' }),
+        search.createColumn({ name:'custcol_snp_rpcm_soldtocust' }),
+        search.createColumn({ name:'custcol_snp_rpcm_reference_item' }),
+        search.createColumn({ name:'custcol_snp_rpcm_quantity_sold' }),
+        search.createColumn({ name:'custcol_snp_rpcm_date_sold' }),
         search.createColumn({
           name:'formulanumeric',
           formula:'{estgrossprofit}',
@@ -85,6 +92,13 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
       var tndSalesTeam = r.getValue({ name:'custcol_snp_rpcm_tnd_manager' });
       var amount     = toNum(r.getValue({ name:'formulanumeric' })) || 0;
       var repSalesAmount = toNum(r.getValue({ name: 'amount' }));
+      var commissionPercent = r.getValue({ name:'custcol_snp_rpcm_percent' });
+      var customerPO = r.getValue({ name:'custcol_snp_rpcm_customer_po' });
+      var soldToLocation = r.getValue({ name:'custcol_snp_rpcm_soldtolocation' });
+      var soldToCustomer = r.getValue({ name:'custcol_snp_rpcm_soldtocust' });
+      var referenceItem = r.getValue({ name:'custcol_snp_rpcm_reference_item' });
+      var quantitySold = r.getValue({ name:'custcol_snp_rpcm_quantity_sold' });
+      var dateSold = r.getValue({ name:'custcol_snp_rpcm_date_sold' });
 
       log.debug('LINE', { customer:customer, subsidiary:subsidiary, location:locationId, item:item, qty:qty, rsm:rsm,tndManager:tndManager,tndSalesTeam:tndSalesTeam, amount:amount });
 
@@ -104,7 +118,7 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
       }
 
       // no merging
-      rsmMap[rsm].lines.push({ item:item, qty:qty, rate:amount, tndManager:tndManager, repSalesAmount: repSalesAmount });
+      rsmMap[rsm].lines.push({ item:item, qty:qty, rate:amount, tndManager:tndManager, repSalesAmount:repSalesAmount, commissionPercent:commissionPercent, customerPO:customerPO, soldToLocation:soldToLocation, soldToCustomer:soldToCustomer, referenceItem:referenceItem, quantitySold:quantitySold, dateSold:dateSold });
 
       return true;
     });
@@ -130,6 +144,8 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
           try { inv.setValue({ fieldId:'subsidiary', value: parseInt(data.subsidiary,10) }); } catch(e){}
         }
 
+        inv.setValue({ fieldId:'account', value:620 });
+
         if (!isEmpty(data.location)) {
           inv.setValue({ fieldId:'location', value: parseInt(data.location,10) });
         } else {
@@ -149,6 +165,15 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
           inv.setCurrentSublistValue({ sublistId:'item', fieldId:'quantity', value: ln.qty });
           inv.setCurrentSublistValue({ sublistId:'item', fieldId:'rate', value: ln.rate });
           inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rep_sales_amount', value: ln.repSalesAmount });
+
+          if (!isEmpty(ln.commissionPercent)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_percent', value:ln.commissionPercent });
+          if (!isEmpty(ln.customerPO)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_customer_po', value:ln.customerPO });
+          if (!isEmpty(ln.soldToLocation)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_soldtolocation', value:ln.soldToLocation });
+          if (!isEmpty(ln.soldToCustomer)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_soldtocust', value:ln.soldToCustomer });
+          if (!isEmpty(ln.referenceItem)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_reference_item', value:ln.referenceItem });
+          if (!isEmpty(ln.quantitySold)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_quantity_sold', value:ln.quantitySold });
+          if (!isEmpty(ln.dateSold)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_date_sold', value:ln.dateSold });
+
           // Pass T&D Manager from Rep Commission line to Invoice line
           if (!isEmpty(ln.tndManager)) {
             try {

@@ -172,7 +172,7 @@ define(['N/record','N/search','N/log','N/runtime'], function(record, search, log
           if (!isEmpty(ln.soldToCustomer)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_soldtocust', value:ln.soldToCustomer });
           if (!isEmpty(ln.referenceItem)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_reference_item', value:ln.referenceItem });
           if (!isEmpty(ln.quantitySold)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_quantity_sold', value:ln.quantitySold });
-          if (!isEmpty(ln.dateSold)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_date_sold', value:ln.dateSold });
+          if (!isEmpty(ln.dateSold)) inv.setCurrentSublistValue({ sublistId:'item', fieldId:'custcol_snp_rpcm_date_sold', value:new Date(ln.dateSold) });
 
           // Pass T&D Manager from Rep Commission line to Invoice line
           if (!isEmpty(ln.tndManager)) {
